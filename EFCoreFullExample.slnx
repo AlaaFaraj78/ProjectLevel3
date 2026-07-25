@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Domains/Domains.csproj" />
+  <Project Path="EFCoreFullExample/WebUI.csproj" />
+  <Project Path="Infrastacture/Infrastacture.csproj" />
+  <Project Path="Services/Services.csproj" />
+</Solution>

@@ -1,0 +1,139 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using Pioneersacademy.Domains.Entities
+@using System.Linq
+@model IEnumerable<Pioneersacademy.Domains.Entities.User>
+
+@{
+}
+
+@* ///////*@
+<div class="row">
+    <div class="col-xl">
+
+        <div class="card mb-6">
+            @* <div style="padding:20px;padding-bottom:0px;">
+
+                @if (Model.ResponseType != ResponseTypeEnum.None)
+                {
+                    var messageType = string.Empty;
+                    if (Model.ResponseType == ResponseTypeEnum.Success)
+                    {
+                        messageType = "alert-success";
+                    }
+                    else if (Model.ResponseType == ResponseTypeEnum.Warning)
+                    {
+                        messageType = "alert-warning";
+                    }
+                    else if (Model.ResponseType == ResponseTypeEnum.Error)
+                    {
+                        messageType = "alert-danger";
+                    }
+                    <div class="alert @messageType alert-dismissible" role="alert">
+                        @Model.Message
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+            </div> *@
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Employee Information Data</h5>
+            </div>
+            <div class="card-body">
+                <form asp-controller="User" asp-action="Add" method="post">
+                    <div class="mb-6">
+                        <label class="form-label" for="basic-icon-default-fullname">Full Name</label>
+                        <div class="input-group input-group-merge">
+                             <input type="text"
+                                   class="form-control"
+                                   name="FullName"
+                                   id="FullName"
+                                   placeholder="Enter Full Name"
+                                   aria-label="Full Name"
+                                   required="required"
+                                   aria-describedby="basic-icon-default-fullname2" />
+                        </div>
+                    </div>
+                  
+                    <div class="mb-6">
+                        <label class="form-label" for="basic-icon-default-email">Email Address</label>
+                        <div class="input-group input-group-merge">
+                            
+                            <input type="email"
+                                   id="EmailAddress"
+                                   name="EmailAddress"
+                                   class="form-control"
+                                   placeholder="Enter Email Address"
+                                   aria-label="Email Address"
+                                   required="required"
+                                   aria-describedby="basic-icon-default-email2" />
+
+                        </div>
+                        
+                    </div>
+                   
+                   <br />
+                    <button type="submit" class="btn btn-primary" aria-label="Save" value="Save Data" title="Save">
+                        SAVE DATA
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<div class="row">
+<div class="table-responsive text-nowrap">
+    <table class="table table-striped table-hover table-bordered align-middle">
+        <thead class="table-primary text-white">
+            <tr>
+                <th>#</th>
+                <th>Employee Name</th>
+                <th>Email Address</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null )
+            {
+                    var i = 0;
+                    foreach (var item in Model)
+                {
+                    i++;
+                    <tr>
+                        <td>@i</td>
+                        <td>@item.FullName</td>
+                        <td>@item.EmailAddress</td>
+
+                        <td>
+                            <a asp-controller="User" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary me-1" title="Edit" aria-label="Edit user">
+                               EDIT
+                            </a>
+
+                            <form asp-controller="User" asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:inline" >
+                                <button type="submit" class="btn btn-sm btn-danger me-1" title="Delete" aria-label="Delete user">
+                                   DELETE
+                                </button>
+                            </form>
+
+                            <a asp-controller="TaskItem" asp-action="Index" asp-route-userId="@item.Id" class="btn btn-sm btn-outline-primary" title="View Tasks" aria-label="View tasks">
+                                TASKS
+                            </a>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="4" class="text-center">No users found.</td>
+                </tr>
+            }
+        </tbody>
+        
+    </table>
+</div>
+</div>
+</div>
+
+@*/////// *@

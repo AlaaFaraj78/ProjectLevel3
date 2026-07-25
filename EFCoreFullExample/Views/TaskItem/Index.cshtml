@@ -1,0 +1,202 @@
+﻿@using Pioneersacademy.Domains.DTOs
+@using Pioneersacademy.Domains.Entities
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@using System.Linq
+@model Pioneersacademy.Domains.DTOs.TaskItemIndexViewModel
+<div class="row">
+    <div class="col-xl">
+
+        <div class="card mb-6">
+            @* <div style="padding:20px;padding-bottom:0px;">
+
+                @if (Model.ResponseType != ResponseTypeEnum.None)
+                {
+                    var messageType = string.Empty;
+                    if (Model.ResponseType == ResponseTypeEnum.Success)
+                    {
+                        messageType = "alert-success";
+                    }
+                    else if (Model.ResponseType == ResponseTypeEnum.Warning)
+                    {
+                        messageType = "alert-warning";
+                    }
+                    else if (Model.ResponseType == ResponseTypeEnum.Error)
+                    {
+                        messageType = "alert-danger";
+                    }
+                    <div class="alert @messageType alert-dismissible" role="alert">
+                        @Model.Message
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+            </div> *@
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Tasks Employee </h5>
+            </div>
+           @*  <div class="card-header align-items-center">
+                <h6 class="mb-0">Employee Name:  <small style="color:red">@Model.UserInfo.FullName</small> </h6>
+            </div> *@
+          
+            <div class="card-body">
+                <form asp-controller="TaskItem" asp-action="Add" method="post">
+                    <input type="hidden" name="AssignedUserId" value="@Model.UserInfo.Id" />
+                   
+                    <div class="mb-6">
+                        
+                        <label class="form-label" for="basic-icon-default-title">Title</label>
+                        <div class="input-group input-group-merge">
+                            <input type="text"
+                                   class="form-control"
+                                   name="Title"
+                                   id="Title"
+                                   placeholder="Enter Title"
+                                   aria-label="Title"
+                                   required="required"
+                                   aria-describedby="basic-icon-default-title" />
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="form-label" for="basic-icon-default-Description">Description</label>
+                        <div class="input-group input-group-merge">
+                            <input type="text"
+                                   class="form-control"
+                                   name="Description"
+                                   id="Description"
+                                   placeholder="Enter Description"
+                                   aria-label="Description"
+                                   required="required"
+                                   aria-describedby="basic-icon-default-Description" />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="DueDate">Due Date</label>
+                        <div class="input-group input-group-merge">
+                            <input type="date"
+                                   class="form-control"
+                                   name="DueDate"
+                                   id="DueDate"
+                                   aria-label="Due Date"
+                                   placeholder="yyyy-mm-dd"
+                                   aria-describedby="basic-icon-default-DueDate" />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="Status">Status</label>
+                        <div class="input-group input-group-merge">
+                            <select class="form-select" id="Status" name="Status" aria-label="Status">
+                                @{
+                                        var statuses = Model.Statuses;
+                                        if (statuses != null)
+                                    {
+                                        foreach (var s in statuses)
+                                        {
+                                            var enumName = s.NameEn?.Replace(" ", "");
+                                            int enumValue = 0;
+                                            if (!string.IsNullOrEmpty(enumName) && Enum.TryParse<Pioneersacademy.Domains.Enums.TaskStatus>(enumName, out var parsed))
+                                            {
+                                                enumValue = (int)parsed;
+                                            }
+                                            else if (string.Equals(s.NameEn, "Pending", StringComparison.OrdinalIgnoreCase))
+                                            {
+                                                enumValue = (int)Pioneersacademy.Domains.Enums.TaskStatus.New;
+                                            }
+                                            <option value="@enumValue">@s.NameEn</option>
+                                        }
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="Priority">Priority</label>
+                        <div class="input-group input-group-merge">
+                            <select class="form-select" id="Priority" name="Priority" aria-label="Priority">
+                                @{
+                                    var priorities = Model.Priorities;
+                                    if (priorities != null)
+                                    {
+                                        foreach (var p in priorities)
+                                        {
+                                            var enumName = p.NameEn?.Replace(" ", "");
+                                            int enumValue = 0;
+                                            if (!string.IsNullOrEmpty(enumName) && Enum.TryParse<Pioneersacademy.Domains.Enums.TaskPriority>(enumName, out var parsedP))
+                                            {
+                                                enumValue = (int)parsedP;
+                                            }
+                                            <option value="@enumValue">@p.NameEn</option>
+                                        }
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    
+                    <br />
+                    <button type="submit" class="btn btn-primary" aria-label="Save" value="Save Data" title="Save">
+                        SAVE DATA
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="table-responsive text-nowrap">
+        <table class="table table-striped table-hover table-bordered align-middle">
+            <thead class="table-primary text-white">
+                <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Priority</th>
+                    <th>Due Date</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    var tasks = Model.Tasks;
+                    if (tasks != null && tasks.Count > 0)
+                    {
+                        var i = 0;
+                        foreach (var item in tasks)
+                        {
+                            i++;
+                            <tr>
+                                <td>@i</td>
+                                <td>@item.Title</td>
+                                <td>@item.Description</td>
+                                <td>@item.Status.ToString()</td>
+                                <td>@item.Priority.ToString()</td>
+                                <td>@(item.DueDate == DateTime.MinValue ? "-" : item.DueDate.ToString("yyyy-MM-dd"))</td>
+                                
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center">No tasks found.</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+
+        </table>
+    </div>
+</div>
+</div>
+
+@*/////// *@
